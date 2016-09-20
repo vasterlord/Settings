@@ -55,11 +55,11 @@ public class MainActivity extends AppCompatActivity {
         switchNetwork.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (switchNetwork.isChecked() == false)
+                if (!switchNetwork.isChecked())
                 {
                    showSettingsAlertNetwork();
                 }
-                else
+                if (switchNetwork.isChecked())
                 {
                    showSettingsAlertNetwork();
                 }
@@ -70,11 +70,11 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 LocationManager locationManager = (LocationManager) getApplication()
                         .getSystemService(LOCATION_SERVICE);
-                if (switchGPS.isChecked() == false)
+                if (!switchGPS.isChecked())
                 {
                     showSettingsAlertGPS();
                 }
-                else
+                if (switchGPS.isChecked())
                 {
                     showSettingsAlertGPS();
                 }
@@ -82,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
         });
         imageViewvBack.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 finish();
             }
         });
@@ -112,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showSettingsAlertGPS() {
+
         android.app.AlertDialog.Builder alertDialog = new android.app.AlertDialog.Builder(this);
         // Setting Dialog Title
         alertDialog.setTitle("GPS is settings");
@@ -129,8 +131,17 @@ public class MainActivity extends AppCompatActivity {
         // On pressing the cancel button
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
+                LocationManager locationManager = (LocationManager) getApplication()
+                        .getSystemService(LOCATION_SERVICE);
                 dialog.cancel();
-                switchGPS.setChecked(false);
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                {
+                    switchGPS.setChecked(true);
+                }
+                else
+                {
+                    switchGPS.setChecked(false);
+                }
             }
         });
 
@@ -157,7 +168,14 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
-                switchNetwork.setChecked(false);
+                if (Helper.isNetworkAvailable(getApplicationContext()))
+                {
+                    switchNetwork.setChecked(true);
+                }
+                else
+                {
+                    switchNetwork.setChecked(false);
+                }
             }
         });
 
